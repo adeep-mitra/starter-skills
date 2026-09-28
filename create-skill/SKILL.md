@@ -1,19 +1,19 @@
 ---
 name: create-skill
 description: >-
-  Create Cursor Agent Skills. Use when authoring a new skill or asking about
-  SKILL.md structure.
+  Create Agent Skills for any AI coding assistant. Use when authoring a new
+  skill or asking about SKILL.md structure.
 ---
-# Creating Skills in Cursor
+# Creating Agent Skills
 
-This skill guides you through creating effective Agent Skills for Cursor. Skills are markdown files that teach the agent how to perform specific tasks: reviewing PRs using team standards, generating commit messages in a preferred format, querying database schemas, or any specialized workflow.
+This skill guides you through creating effective Agent Skills. Skills are markdown files that teach the agent how to perform specific tasks: reviewing PRs using team standards, generating commit messages in a preferred format, querying database schemas, or any specialized workflow.
 
 ## Before You Begin: Gather Requirements
 
 Before creating a skill, gather essential information from the user about:
 
 1. **Purpose and scope**: What specific task or workflow should this skill help with?
-2. **Target location**: Should this be a personal skill (~/.cursor/skills/) or project skill (.cursor/skills/)?
+2. **Target location**: Should this be a personal skill (available in all projects) or a project skill (lives in the repository)?
 3. **Trigger scenarios**: When should the agent automatically apply this skill?
 4. **Key domain knowledge**: What specialized information does the agent need that it wouldn't already know?
 5. **Output format preferences**: Are there specific templates, formats, or styles required?
@@ -29,15 +29,15 @@ If you have previous conversation context, infer the skill from what was discuss
 
 ### Gathering Additional Information
 
-If you need clarification, use the AskQuestion tool when available:
+If you need clarification and your tool offers a structured question or multiple-choice tool, use it:
 
 ```
-Example AskQuestion usage:
-- "Where should this skill be stored?" with options like ["Personal (~/.cursor/skills/)", "Project (.cursor/skills/)"]
+Example questions:
+- "Where should this skill be stored?" with options like ["Personal (all projects)", "Project (this repository)"]
 - "Should this skill include executable scripts?" with options like ["Yes", "No"]
 ```
 
-If the AskQuestion tool is not available, ask these questions conversationally.
+Otherwise, ask these questions conversationally.
 
 ---
 
@@ -59,12 +59,14 @@ skill-name/
 
 ### Storage Locations
 
-| Type | Path | Scope |
-|------|------|-------|
-| Personal | ~/.cursor/skills/skill-name/ | Available across all your projects |
-| Project | .cursor/skills/skill-name/ | Shared with anyone using the repository |
+| Type | Location | Scope |
+|------|----------|-------|
+| Personal | The skills folder in your home directory that your tool reads | Available across all your projects |
+| Project | The skills folder inside the repository that your tool reads | Shared with anyone using the repository |
 
-**IMPORTANT**: Never create skills in `~/.cursor/skills-cursor/`. This directory is reserved for Cursor's internal built-in skills and is managed automatically by the system.
+Each AI tool reads skills from its own folders. Use the folder the current tool expects; if unsure, look for an existing skills folder in the project or home directory, or check the tool's documentation.
+
+**IMPORTANT**: Never write into folders reserved for a tool's built-in skills. Those are managed automatically and may be overwritten.
 
 ### SKILL.md Structure
 
@@ -74,7 +76,6 @@ Every skill requires a `SKILL.md` file with YAML frontmatter and markdown body:
 ---
 name: your-skill-name
 description: Brief description of what this skill does and when to use it
-disable-model-invocation: true
 ---
 
 # Your Skill Name
@@ -86,7 +87,7 @@ Clear, step-by-step guidance for the agent.
 Concrete examples of using this skill.
 ```
 
-Default `disable-model-invocation: true` so the skill only loads when named explicitly. Omit it only when the agent should auto-invoke from ambient context.
+Some tools support extra frontmatter fields (for example, one that stops the skill from loading automatically). Only add them if the current tool supports them; `name` and `description` work everywhere.
 
 ### Required Metadata Fields
 
@@ -399,7 +400,7 @@ Gather information about:
 4. Any specific requirements or constraints
 5. Existing examples or patterns to follow
 
-If you have access to the AskQuestion tool, use it for efficient structured gathering. Otherwise, ask conversationally.
+If your tool offers a structured question tool, use it for efficient gathering. Otherwise, ask conversationally.
 
 ### Phase 2: Design
 
